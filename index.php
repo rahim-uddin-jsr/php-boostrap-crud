@@ -1,6 +1,8 @@
 <?php
 include('header.php');
 include('connectDb.php');
+session_start();
+// session_name('auth');
 
 if (isset($_POST['submit'])) {
     $email = $_POST['email'];
@@ -22,10 +24,14 @@ if (isset($_POST['submit'])) {
         'image/jpg',
         'image/webp',
     );
+    $upload_status;
     if ($_FILES['image']) {
         if (in_array($_FILES['image']['type'], $allowedTypes) !== false && $_FILES['image']['size'] < 5 * 1024 * 1024) {
-            move_uploaded_file($_FILES['image']['tmp_name'], "images/" . $_FILES['image']['name']);
+            $upload_status = move_uploaded_file($_FILES['image']['tmp_name'], "images/" . $_FILES['image']['name']);
         }
+        $_SESSION['status'] = "<script>
+        alert('inserted successfully!');
+    </script>";
     }
 }
 
@@ -33,16 +39,23 @@ if (isset($_POST['submit'])) {
 
 
 <div class="container-sm mt-5">
+    <h2>
+        <!-- <?php if ($_SESSION['username']) {
+                    echo $_SESSION['username'];
+                } ?> -->
+    </h2>
     <h2 class="text-center">Write your opinion</h2>
     <form class="mx-auto w-50" action="index.php" method="post" enctype="multipart/form-data">
 
         <div class="mb-3">
             <label for="exampleFormControlInput1" class="form-label">Email address</label>
-            <input required type="email" class="form-control" name="email" id="exampleFormControlInput1" placeholder="name@example.com">
+            <input required type="email" class="form-control" name="email" id="exampleFormControlInput1"
+                placeholder="name@example.com">
         </div>
         <div class="mb-3">
             <label for="exampleFormControlInput3" class="form-label">Upload Image</label>
-            <input required type="file" class="form-control" name="image" id="exampleFormControlInput3" placeholder="name@example.com">
+            <input required type="file" class="form-control" name="image" id="exampleFormControlInput3"
+                placeholder="name@example.com">
         </div>
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">Example textarea</label>
